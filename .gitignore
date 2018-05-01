@@ -1,5 +1,6 @@
-# Auto detect text files and perform LF normalization
-* text=auto
 PIC/*.o
-
 PIC/*.cof
+PIC/*.mcp
+PIC/*.mcs
+PIC/*.mcw
+PIC/*.map
