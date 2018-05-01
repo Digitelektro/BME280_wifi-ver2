@@ -2,12 +2,12 @@
 #include "RN171.h"
 #include <string.h>
 
-#define FCY 64000000LL            //Órajel definiálása
+#define FCY 5988125LL            //Órajel definiálása
 #include <libpic30.h>
 
 
 char *ptr;        
-char RN171_RxData[256] = {"\0"};					//Enough large buffer for receiving string
+char RN171_RxData[256] = {"\0"};					//Enough large buffer for receiving string from Wifly
 unsigned char RxDataCounter = 0;
 unsigned char RN171_CommandReceived;
 int timeout = 0;
@@ -17,7 +17,7 @@ RN171_STATUS wifiStatus;
 char RN171_WakeUp();
 
 
-void UARTInit()					//UART init
+void UARTInit()
 {
     U1BRG = 389;                	//Baudrate 9600 
 	U1MODEbits.UARTEN = 1;      	//UART Enable
