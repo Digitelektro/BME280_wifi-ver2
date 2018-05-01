@@ -1,7 +1,4 @@
 
-
-#define BTRESET LATBbits.LATB15
-
 void UARTInit();
 void RN171_SendData(void* Data, int size);
 void RN171_SendStr(char* Data);
@@ -24,5 +21,5 @@ typedef enum
 	RN171_SLEEP = 0,
 	RN171_NORMAL,
 	RN171_CMD,
-
+	RN171_UNKNOWN
 } RN171_STATUS;
