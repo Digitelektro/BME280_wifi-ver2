@@ -180,7 +180,10 @@ char RN171_Sleep()
 		n = strstr(RN171_RxData, "sleep");
 		timeout++;
 		if(timeout == 500)
+		{	
+			wifiStatus = RN171_UNKNOWN;		//Fix already in CMD mode error when sleep command return incorrectly from wifi
 			return RN171_TIMEOUT;
+		}
 	}while(n == 0);
 	wifiStatus = RN171_SLEEP;
 	return RN171_OK;
