@@ -12,8 +12,8 @@
 
 #define STATION_ID 0	//Weather station ID
 
-#define FCY 59881250LL            //Define clock for delay_ms library
-#include <libpic30.h>            //This is need to use delay_ms function, #define FCY must be under #include <libpic.h> otherwise it's not working
+#define FCY 59881250LL			//Define clock for delay_ms library
+#include <libpic30.h>			//This is need to use delay_ms function, #define FCY must be under #include <libpic.h> otherwise it's not working
 
 _FPOR(ALTI2C1_ON)				//I2C alternativ pin configuration  :RB8, RB9  
 _FGS(GWRP_OFF & GCP_OFF)		//Write protect and code protect disabled
@@ -51,30 +51,30 @@ void init()
 	PLLFBD=63; // M=65
 
 	// Initiate Clock Switch to FRC (7,37Mhz)oscillator with PLL (NOSC=0b001)
-    __builtin_write_OSCCONH(0x01);
-    __builtin_write_OSCCONL(OSCCON | 0x01);
-    // Wait for Clock switch to occur
-    while (OSCCONbits.COSC!= 0b001);
-    // Wait for PLL to lock
-    while (OSCCONbits.LOCK!= 1);
+	__builtin_write_OSCCONH(0x01);
+	__builtin_write_OSCCONL(OSCCON | 0x01);
+	// Wait for Clock switch to occur
+	while (OSCCONbits.COSC!= 0b001);
+	// Wait for PLL to lock
+	while (OSCCONbits.LOCK!= 1);
 
    	ANSELA = 0; 	//Disable analog pins
 	ANSELB = 0;
 
-    TRISB = 0;		//All ports are output
-    TRISA = 0;
-    
-    //Timer1 init, it is used for clear WDT timer durring normal conditions
-    T1CONbits.TON = 0; // Disable Timer
-    T1CONbits.TCS = 0; // Select internal instruction cycle clock
-    T1CONbits.TGATE = 0; // Disable Gated Timer mode
-    T1CONbits.TCKPS = 0b11; // Select 1:256 Prescaler
-    TMR1 = 0x00; // Clear timer register
-    PR1 = 23391; // Load PR value for ~10mS
-    IPC0bits.T1IP = 0x01; // Set Timer 1 Interrupt Priority Level
-    IFS0bits.T1IF = 0; // Clear Timer 1 Interrupt Flag
-    IEC0bits.T1IE = 1; // Enable Timer1 interrupt
-    T1CONbits.TON = 1; // Start Timer
+	TRISB = 0;		//All ports are output
+	TRISA = 0;
+	
+	//Timer1 init, it is used for clear WDT timer durring normal conditions
+	T1CONbits.TON = 0; // Disable Timer
+	T1CONbits.TCS = 0; // Select internal instruction cycle clock
+	T1CONbits.TGATE = 0; // Disable Gated Timer mode
+	T1CONbits.TCKPS = 0b11; // Select 1:256 Prescaler
+	TMR1 = 0x00; // Clear timer register
+	PR1 = 23391; // Load PR value for ~10mS
+	IPC0bits.T1IP = 0x01; // Set Timer 1 Interrupt Priority Level
+	IFS0bits.T1IF = 0; // Clear Timer 1 Interrupt Flag
+	IEC0bits.T1IE = 1; // Enable Timer1 interrupt
+	T1CONbits.TON = 1; // Start Timer
 
 	UARTInit();
 	initI2C();
@@ -84,30 +84,30 @@ void init()
 
 int main()
 {
-    init();
-    BlinkStatusLed(1);	//Indicate power on
-    BMP280_Init();
+	init();
+	BlinkStatusLed(1);	//Indicate power on
+	BMP280_Init();
 
-    while(1)
-    {
+	while(1)
+	{
 		status = RN171_Join();
 		if(status == RN171_OK)
 		{
 			BlinkStatusLed(1);	//Indicate succesfull wifi connection
-            StartConversion = 0;
-            //Get Temp,Hum,Press
-            BMP280_StartForcedMode();
-            BMP280_StartForcedMode();
-            while(BMP280_IsMeasuring() == 0)
-            {
-                __delay_ms(10);  
-            }
-            BMP280_Read_AllData();
-            sprintf(SensorData,"{\"temperature\": %f ,\"pressure\": %f, \"humidity\" : %f, \"location\" : %d }", Temperature, Pressure, Humidity, STATION_ID);
-            EncodedSensorData = base64_encode(SensorData, strlen(SensorData), &EncodedLen);
-            Nop();
-            RN171_SendData(EncodedSensorData, EncodedLen);
-            free(EncodedSensorData);
+			StartConversion = 0;
+			//Get Temp,Hum,Press
+			BMP280_StartForcedMode();
+			BMP280_StartForcedMode();
+			while(BMP280_IsMeasuring() == 0)
+			{
+				__delay_ms(10);  
+			}
+			BMP280_Read_AllData();
+			sprintf(SensorData,"{\"temperature\": %f ,\"pressure\": %f, \"humidity\" : %f, \"location\" : %d }", Temperature, Pressure, Humidity, STATION_ID);
+			EncodedSensorData = base64_encode(SensorData, strlen(SensorData), &EncodedLen);
+			Nop();
+			RN171_SendData(EncodedSensorData, EncodedLen);
+			free(EncodedSensorData);
 		}
 		else
 		{
@@ -117,8 +117,8 @@ int main()
 		TaskFinished = 1;
 		SleepSec(60);
 		
-    }
-    return 1;
+	}
+	return 1;
 }
 
 
