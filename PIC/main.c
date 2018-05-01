@@ -48,7 +48,7 @@ void init()
 	CLKDIVbits.PLLPOST=0b00; // N2=2
 	CLKDIVbits.PLLPRE=0b00; // N1=2
 	CLKDIVbits.DOZEN = 0;
-	PLLFBD=64; // M=65
+	PLLFBD=63; // M=65
 
 	// Initiate Clock Switch to FRC (7,37Mhz)oscillator with PLL (NOSC=0b001)
     __builtin_write_OSCCONH(0x01);
