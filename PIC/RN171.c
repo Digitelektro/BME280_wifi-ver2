@@ -2,7 +2,7 @@
 #include "RN171.h"
 #include <string.h>
 
-#define FCY 5988125LL            //Órajel definiálása
+#define FCY 59881250LL            //Órajel definiálása
 #include <libpic30.h>
 
 

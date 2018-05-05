@@ -2,7 +2,7 @@
 #include"p24Exxxx.h"
 #include"I2C.h"
 
-#define FCY 5988125LL            //Define clock for delay_ms library
+#define FCY 59881250LL            //Define clock for delay_ms library
 #include <libpic30.h>            //This is need to use delay_ms function, #define FCY must be under #include <libpic.h> otherwise it's not working
 
 
