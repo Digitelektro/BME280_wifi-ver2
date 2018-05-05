@@ -13,7 +13,7 @@ HumCompParams HumCompData;
 float Temperature;
 float Pressure;
 float Humidity;
-unsigned char CompData [42]; 
+unsigned char CompData [32]; 
 
 long BMP280_ConvertTemperature(long adc_T)
 {
@@ -95,7 +95,7 @@ void BMP280_Init()
      I2CSend(0x88);
      I2CReStart(0xEC | 0b00000001);
      int count;
-     for (count = 0; count < 25; count++)
+     for (count = 0; count < 24; count++)
      {
         I2C1CONbits.RCEN = 1;
         I2CWait();
@@ -106,7 +106,7 @@ void BMP280_Init()
      }
     I2C1CONbits.RCEN = 1;
     I2CWait();
-    CompData[25]= I2C1RCV;
+    CompData[24]= I2C1RCV;
     I2C1CONbits.ACKDT = 1;	//Send NACK
 	I2C1CONbits.ACKEN = 1;
 	I2CWait();
@@ -116,7 +116,7 @@ void BMP280_Init()
      I2CStart(0xEC); 	
      I2CSend(0xE1);
      I2CReStart(0xEC | 0b00000001);
-     for (count = 26; count < 41; count++)
+     for (count = 25; count < 32; count++)
      {
         I2C1CONbits.RCEN = 1;
         I2CWait();
@@ -127,7 +127,7 @@ void BMP280_Init()
      }
     I2C1CONbits.RCEN = 1;
     I2CWait();
-    CompData[41]= I2C1RCV;
+    CompData[32]= I2C1RCV;
     I2C1CONbits.ACKDT = 1;	//Send NACK
 	I2C1CONbits.ACKEN = 1;
 	I2CWait();
@@ -137,15 +137,15 @@ void BMP280_Init()
     memcpy(&TempCompData,CompData,6);
     memcpy(&PressCompData,&CompData[6],18);
     //memcpy(&HumCompData,&CompData[24],10);
-    HumCompData.dig_H1 = CompData[25];
-    HumCompData.dig_H2 = CompData[26];
-    HumCompData.dig_H2 |= (uint16_t)CompData[27] << 8;
-    HumCompData.dig_H3 = CompData[28];
-    HumCompData.dig_H4 = (uint16_t)CompData[29] << 4; // bits 11:4
-    HumCompData.dig_H4 |= CompData[30] & 0b00001111; // bits 11:4
-    HumCompData.dig_H5 = CompData[30] >> 4;
-    HumCompData.dig_H5 |= CompData[31] << 4;
-    HumCompData.dig_H6 = CompData[32];
+    HumCompData.dig_H1 = CompData[24];
+    HumCompData.dig_H2 = CompData[25];
+    HumCompData.dig_H2 |= (uint16_t)CompData[26] << 8;
+    HumCompData.dig_H3 = CompData[27];
+    HumCompData.dig_H4 = (uint16_t)CompData[28] << 4; // bits 11:4
+    HumCompData.dig_H4 |= CompData[29] & 0b00001111; // bits 0:3
+    HumCompData.dig_H5 = CompData[29] >> 4;
+    HumCompData.dig_H5 |= CompData[30] << 4;
+    HumCompData.dig_H6 = CompData[31];
   
 }
 
