@@ -1,6 +1,6 @@
 #include "BME280.h"
-#include"p24Exxxx.h"
-#include"I2C.h"
+#include "p24Exxxx.h"
+#include "I2C.h"
 
 #define FCY 59881250LL            //Define clock for delay_ms library
 #include <libpic30.h>            //This is need to use delay_ms function, #define FCY must be under #include <libpic.h> otherwise it's not working
@@ -70,73 +70,20 @@ unsigned long BMP280_ConvertHumidity(long adc_H)
 
 void BMP280_Read_ID()
 {
-	unsigned char temp[6];
-    I2CStart(0xEC); 	
-	I2CSend(0xF4);
-	I2CReStart(0xEC | 0b00000001);	//When read gyro sens, set BIT0 !
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[0]= I2C1RCV;
-	I2C1CONbits.ACKDT = 1;	//Send NACK
-	I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.ACKDT = 0;
-	I2CStop();    
+	unsigned char temp[1];
+	I2CRead(BME280_ADDRESS, BME280_REGISTER_CONTROL, temp, 1);   
 }
 
 void BMP280_Init()
 {
-     I2CStart(0xEC); 	
-     I2CSend(0xF2);
-     I2CSend(0x01);
-     I2CStop();
+	I2CWrite(BME280_ADDRESS, BME280_REGISTER_CONTROLHUMID, 0x01);
      __delay_ms(1);
-     I2CStart(0xEC); 	
-     I2CSend(0x88);
-     I2CReStart(0xEC | 0b00000001);
-     int count;
-     for (count = 0; count < 24; count++)
-     {
-        I2C1CONbits.RCEN = 1;
-        I2CWait();
-        CompData[count]= I2C1RCV;
-        I2C1CONbits.ACKDT = 0;	//Send ACK
-        I2C1CONbits.ACKEN = 1;
-        I2CWait();
-     }
-    I2C1CONbits.RCEN = 1;
-    I2CWait();
-    CompData[24]= I2C1RCV;
-    I2C1CONbits.ACKDT = 1;	//Send NACK
-	I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.ACKDT = 0;
-	I2CStop();
-    __delay_ms(1);
-     I2CStart(0xEC); 	
-     I2CSend(0xE1);
-     I2CReStart(0xEC | 0b00000001);
-     for (count = 25; count < 32; count++)
-     {
-        I2C1CONbits.RCEN = 1;
-        I2CWait();
-        CompData[count]= I2C1RCV;
-        I2C1CONbits.ACKDT = 0;	//Send ACK
-        I2C1CONbits.ACKEN = 1;
-        I2CWait();
-     }
-    I2C1CONbits.RCEN = 1;
-    I2CWait();
-    CompData[32]= I2C1RCV;
-    I2C1CONbits.ACKDT = 1;	//Send NACK
-	I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.ACKDT = 0;
-	I2CStop();
+
+	I2CRead(BME280_ADDRESS, BME280_REGISTER_DIG_T1, CompData, 25);
+	I2CRead(BME280_ADDRESS, BME280_REGISTER_DIG_H2, &CompData[25], 7);
     
     memcpy(&TempCompData,CompData,6);
     memcpy(&PressCompData,&CompData[6],18);
-    //memcpy(&HumCompData,&CompData[24],10);
     HumCompData.dig_H1 = CompData[24];
     HumCompData.dig_H2 = CompData[25];
     HumCompData.dig_H2 |= (uint16_t)CompData[26] << 8;
@@ -151,85 +98,22 @@ void BMP280_Init()
 
 void BMP280_StartForcedMode()
 {
-     I2CStart(0xEC); 	
-     I2CSend(0xF4);
-     I2CSend(0x25);
-     I2CStop();    
+	I2CWrite(BME280_ADDRESS, BME280_REGISTER_CONTROL, 0x25);
 }
 
 char BMP280_IsMeasuring()
 {
-    unsigned char temp[1];
-    I2CStart(0xEC); 	
-	I2CSend(0xF3);
-	I2CReStart(0xEC | 0b00000001);	//When read gyro sens, set BIT0 !
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[0]= I2C1RCV;
-	I2C1CONbits.ACKDT = 1;	//Send NACK
-	I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.ACKDT = 0;
-	I2CStop();    
-    if (temp[0] & 0b00001000)
-    {  
-        return 1;
-    } 
-    else
-    {
-      return 0;
-    }
+	unsigned char temp[1];
+	I2CRead(BME280_ADDRESS, BME280_REGISTER_STATUS, temp, 1);
+	return temp[0] & 0b00001000;
 }
 
 void BMP280_Read_AllData()
 {
 	unsigned char temp[8];
-    I2CStart(0xEC); 	
-	I2CSend(0xF7);
-	I2CReStart(0xEC | 0b00000001);	//When read gyro sens, set BIT0 !
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[0]= I2C1RCV;
-    I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[1]= I2C1RCV;
-    I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[2]= I2C1RCV;
-    I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[3]= I2C1RCV;
-    I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[4]= I2C1RCV;
-    I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[5]= I2C1RCV;
-    I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[6]= I2C1RCV;
-    I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.RCEN = 1;
-	I2CWait();
-	temp[7]= I2C1RCV;
-	I2C1CONbits.ACKDT = 1;	//Send NACK
-	I2C1CONbits.ACKEN = 1;
-	I2CWait();
-	I2C1CONbits.ACKDT = 0;
-	I2CStop();  
+
+	I2CRead(BME280_ADDRESS, BME280_REGISTER_PRESSUREDATA, temp, 8);
+  
     unsigned long adc_t = 0;
     unsigned long adc_p = 0;
     unsigned long adc_h = 0;
