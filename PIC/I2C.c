@@ -39,12 +39,13 @@ void I2CWait ()
 
 void I2CInit()	// I2C1 master mode enable
 {
+	char dummy;
 	I2C1RCV = 0;
 	I2C1TRN = 0;
 	I2C1STAT = 0;
 	I2C1CON = 0b1000001000000000;
 	I2C1BRG = 400;
-	char dummy = I2C1RCV;
+	dummy = I2C1RCV;
 }
 
 void I2CStart(unsigned char Address)

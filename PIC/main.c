@@ -139,7 +139,7 @@ int main()
 				__delay_ms(10);  
 			}
 			BMP280_Read_AllData(&Temperature, &Pressure, &Humidity);
-			sprintf(SensorData,"{\"temperature\": %f ,\"pressure\": %f, \"humidity\" : %f, \"location\" : %d }", Temperature, Pressure, Humidity, STATION_ID);
+			sprintf(SensorData,"{\"temperature\": %f ,\"pressure\": %f, \"humidity\" : %f, \"location\" : %d }", (double)Temperature, (double)Pressure, (double)Humidity, STATION_ID);
 			EncodedSensorData = base64_encode(SensorData, strlen(SensorData), &EncodedLen);
 			Nop();
 			RN171_SendData(EncodedSensorData, EncodedLen);

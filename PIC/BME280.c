@@ -1,3 +1,4 @@
+#include <string.h>
 #include "BME280.h"
 #include "p24Exxxx.h"
 #include "I2C.h"

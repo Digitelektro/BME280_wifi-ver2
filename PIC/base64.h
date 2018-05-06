@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-char* base64_encode(unsigned char *data,
+char* base64_encode(char *data,
                     int input_length,
                     int *output_length);
 
