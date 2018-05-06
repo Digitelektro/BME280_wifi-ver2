@@ -126,3 +126,4 @@ void I2CWrite(unsigned char Address, unsigned char Register, unsigned char Data)
     I2CSend(Data);
     I2CStop();    
 }
+
