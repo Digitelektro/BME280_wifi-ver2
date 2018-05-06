@@ -38,6 +38,9 @@ char SensorData[255] = "/0";
 char* EncodedSensorData;
 int EncodedLen;
 char status;
+float Temperature;
+float Pressure;
+float Humidity;
 
 
 //*********************************************************//
@@ -77,7 +80,7 @@ void init()
 	T1CONbits.TON = 1; // Start Timer
 
 	UARTInit();
-	initI2C();
+	I2CInit();
 }
 
 
@@ -102,7 +105,7 @@ int main()
 			{
 				__delay_ms(10);  
 			}
-			BMP280_Read_AllData();
+			BMP280_Read_AllData(&Temperature, &Pressure, &Humidity);
 			sprintf(SensorData,"{\"temperature\": %f ,\"pressure\": %f, \"humidity\" : %f, \"location\" : %d }", Temperature, Pressure, Humidity, STATION_ID);
 			EncodedSensorData = base64_encode(SensorData, strlen(SensorData), &EncodedLen);
 			Nop();

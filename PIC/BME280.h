@@ -55,11 +55,7 @@ extern "C" {
 #define BME280_REGISTER_PRESSUREDATA	0xF7
 #define BME280_REGISTER_TEMPDATA 		0xFA
 #define BME280_REGISTER_HUMIDDATA 		0xFD   
-    
-extern float Temperature;
-extern float Pressure;
-extern float Humidity;
-    
+      
     
 void BMP280_Init();
 void BMP280_Read_ID();

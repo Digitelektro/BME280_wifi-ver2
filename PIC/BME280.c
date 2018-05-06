@@ -10,9 +10,6 @@ long t_fine;
 TempCompParams TempCompData;
 PressCompParams PressCompData;
 HumCompParams HumCompData;
-float Temperature;
-float Pressure;
-float Humidity;
 unsigned char CompData [32]; 
 
 long BMP280_ConvertTemperature(long adc_T)
@@ -108,7 +105,7 @@ char BMP280_IsMeasuring()
 	return temp[0] & 0b00001000;
 }
 
-void BMP280_Read_AllData()
+void BMP280_Read_AllData(float *Temperature, float *Pressure, float *Humidity)
 {
 	unsigned char temp[8];
 
@@ -125,9 +122,9 @@ void BMP280_Read_AllData()
     adc_p |= (uint32_t)temp[0] << 12;
     adc_h = temp[7];
     adc_h |= (uint32_t)temp[6] << 8;
-    Temperature = (float)BMP280_ConvertTemperature(adc_t) / 100;
-    Pressure = (float)BMP280_ConvertPressure(adc_p) / 100;
-    Humidity = (float)BMP280_ConvertHumidity(adc_h) / 1024;
+    *Temperature = (float)BMP280_ConvertTemperature(adc_t) / 100;
+    *Pressure = (float)BMP280_ConvertPressure(adc_p) / 100;
+    *Humidity = (float)BMP280_ConvertHumidity(adc_h) / 1024;
     Nop();
 }
 

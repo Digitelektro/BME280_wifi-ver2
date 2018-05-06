@@ -37,7 +37,7 @@ void I2CWait ()
 	
 }
 
-void initI2C()	// I2C1 master mode enable
+void I2CInit()	// I2C1 master mode enable
 {
 	I2C1RCV = 0;
 	I2C1TRN = 0;
